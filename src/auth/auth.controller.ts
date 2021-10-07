@@ -1,10 +1,12 @@
 import { Body, Controller, Post, UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { isObject } from 'class-validator';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
+import { UserEntity } from './entities/user.entity';
 
 
-
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
     constructor(
@@ -12,6 +14,8 @@ export class AuthController {
     ) {}
 
 
+    @ApiOperation({summary: "Registration"})
+    @ApiResponse({status: 201, type: UserEntity})
     @UsePipes(new ValidationPipe())
     @Post('registration')
     create(@Body() body: AuthDto ) {
@@ -22,7 +26,8 @@ export class AuthController {
         return this.authService.createUser(body)
     }
 
-
+    @ApiOperation({summary: "Login"})
+    @ApiResponse({status: 200 })
     @UsePipes(new ValidationPipe())
     @Post('login')
     async login(@Body() {username, password}: AuthDto ) {
